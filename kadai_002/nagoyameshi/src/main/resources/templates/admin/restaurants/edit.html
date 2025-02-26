@@ -1,0 +1,287 @@
+<!DOCTYPE html>
+<html xmlns:th="https://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+ 	<head>
+		<div th:replace="~{fragment :: meta}"></div>   
+   	 	      
+		<div th:replace="~{fragment :: styles}"></div>
+		
+		<title>店舗情報編集</title>       
+	</head>
+	<body>
+		<div class="nagoyameshi-wrapper">
+			<!-- ヘッダー -->
+			<div th:replace="~{fragment :: header}"></div>
+			
+			<main>
+				<div class="container pt-4 pb-5 nagoyameshi-container">
+					<div class="row justify-content-center">
+						<div class="col-xl-5 col-lg-6 col-md-8">
+							<nav class="mb-4" style="--bs-breadcrumb-divider: '>';" aria-label="breadcrumb">
+								<ol class="breadcrumb mb-0"> 
+									<li class="breadcrumb-item"><a th:href="@{/admin/restaurants}">店舗一覧</a></li>  
+									<li class="breadcrumb-item"><a th:href="@{/admin/restaurants/__${restaurantEditForm.getId()}__}">店舗詳細</a></li>                                                           
+									<li class="breadcrumb-item active" aria-current="page">店舗情報編集</li>
+								</ol>
+							</nav> 
+							
+							<h1 class="mb-4 text-center">店舗情報編集</h1>         
+							
+							<form method="post" th:action="@{/admin/restaurants/__${restaurantEditForm.getId()}__/update}" th:object="${restaurantEditForm}" enctype="multipart/form-data">   
+								<input type="hidden" th:field="*{id}">
+								
+									<div class="form-group row mb-3">
+										<div class="col-md-4">
+											<label for="name" class="col-form-label text-md-left fw-bold">店舗名</label>
+										</div>
+										<div class="col-md-8">                                    
+											<div th:if="${#fields.hasErrors('name')}" class="text-danger small mb-2" th:errors="*{name}"></div>                                    
+											<input type="text" class="form-control" th:field="*{name}" autofocus>
+										</div>
+									</div>
+									
+									<div class="form-group row mb-3">
+										<div class="col-md-4">
+											<label for="imageFile" class="col-form-label text-md-left fw-bold">店舗画像</label>
+										</div>                                    
+										<div class="col-md-8">
+											<div th:if="${#fields.hasErrors('imageFile')}" class="text-danger small mb-2" th:errors="*{imageFile}"></div>  
+											<input type="file" class="form-control" th:field="*{imageFile}">
+										</div>
+									</div>
+									
+									<!-- 選択された画像の表示場所 -->
+									<div th:if="${imageName}" class="row" id="imagePreview"><img th:src="@{/storage/__${imageName}__}" class="mb-3"></div>
+									<div th:unless="${imageName}" class="row" id="imagePreview"></div>                                 
+									
+									<div class="form-group row mb-3">
+										<div class="col-md-4">
+											<label for="description" class="col-form-label text-md-left fw-bold">説明</label>
+										</div>
+										<div class="col-md-8">                            
+											<div th:if="${#fields.hasErrors('description')}" class="text-danger small mb-2" th:errors="*{description}"></div>                                        
+											<textarea class="form-control" th:field="*{description}" cols="30" rows="5"></textarea>
+										</div>
+									</div>
+									
+									<div class="form-group row mb-3">
+										<div class="col-md-4">
+											<label for="lowestPrice" class="col-form-label text-md-left fw-bold">最低価格（単位：円）</label>
+										</div>
+										<div class="col-md-8">
+											<div th:if="${#fields.hasErrors('lowestPrice')}" class="text-danger small mb-2" th:errors="*{lowestPrice}"></div>
+											<input type="number" class="form-control" th:field="*{lowestPrice}">
+										</div>
+									</div>
+
+									<div class="form-group row mb-3">
+										<div class="col-md-4">
+											<label for="highestPrice" class="col-form-label text-md-left fw-bold">最高価格（単位：円）</label>
+										</div>
+										<div class="col-md-8">
+											<div th:if="${#fields.hasErrors('highestPrice')}" class="text-danger small mb-2" th:errors="*{highestPrice}"></div>
+											<input type="number" class="form-control" th:field="*{highestPrice}">
+										</div>
+									</div>
+
+									<div class="form-group row mb-3">
+										<div class="col-md-4">
+											<label for="postalCode" class="col-form-label text-md-left fw-bold">郵便番号</label>
+										</div>
+										<div class="col-md-8">
+											<div th:if="${#fields.hasErrors('postalCode')}" class="text-danger small mb-2" th:errors="*{postalCode}"></div>
+											<input type="text" class="form-control" th:field="*{postalCode}">
+										</div>
+									</div>
+
+									<div class="form-group row mb-3">
+										<div class="col-md-4">
+											<label for="address" class="col-form-label text-md-left fw-bold">住所</label>
+										</div>
+										<div class="col-md-8">
+											<div th:if="${#fields.hasErrors('address')}" class="text-danger small mb-2" th:errors="*{address}"></div>
+											<input type="text" class="form-control" th:field="*{address}">
+										</div>
+									</div>
+
+									<div class="form-group row mb-3">
+										<div class="col-md-4">
+											<label for="openTime" class="col-form-label text-md-left fw-bold">開店時間</label>
+										</div>
+										<div class="col-md-8">
+											<div th:if="${#fields.hasErrors('openTime')}" class="text-danger small mb-2" th:errors="*{openTime}"></div>
+											<select id="openTime" th:field="*{openTime}" class="form-control">
+												<option value="">選択してください</option>
+												<option value="00:00">00:00</option>
+												<option value="00:30">00:30</option>
+												<option value="01:00">01:00</option>
+												<option value="01:30">01:30</option>
+												<option value="02:00">02:00</option>
+												<option value="02:30">02:30</option>
+												<option value="03:00">03:00</option>
+												<option value="03:30">03:30</option>
+												<option value="04:00">04:00</option>
+												<option value="04:30">04:30</option>
+												<option value="05:00">05:00</option>
+												<option value="05:30">05:30</option>
+												<option value="06:00">06:00</option>
+												<option value="06:30">06:30</option>
+												<option value="07:00">07:00</option>
+												<option value="07:30">07:30</option>
+												<option value="08:00">08:00</option>
+												<option value="08:30">08:30</option>
+												<option value="09:00">09:00</option>
+												<option value="09:30">09:30</option>
+												<option value="10:00">10:00</option>
+												<option value="10:30">10:30</option>
+												<option value="11:00">11:00</option>
+												<option value="11:30">11:30</option>
+												<option value="12:00">12:00</option>
+												<option value="12:30">12:30</option>
+												<option value="13:00">13:00</option>
+												<option value="13:30">13:30</option>
+												<option value="14:00">14:00</option>
+												<option value="14:30">14:30</option>
+												<option value="15:00">15:00</option>
+												<option value="15:30">15:30</option>
+												<option value="16:00">16:00</option>
+												<option value="16:30">16:30</option>
+												<option value="17:00">17:00</option>
+												<option value="17:30">17:30</option>
+												<option value="18:00">18:00</option>
+												<option value="18:30">18:30</option>
+												<option value="19:00">19:00</option>
+												<option value="19:30">19:30</option>
+												<option value="20:00">20:00</option>
+												<option value="20:30">20:30</option>
+												<option value="21:00">21:00</option>
+												<option value="21:30">21:30</option>
+												<option value="22:00">22:00</option>
+												<option value="22:30">22:30</option>
+												<option value="23:00">23:00</option>
+												<option value="23:30">23:30</option>
+											</select>
+										</div>
+									</div>
+
+									<div class="form-group row mb-3">
+										<div class="col-md-4">
+											<label for="openTime" class="col-form-label text-md-left fw-bold">閉店時間</label>
+										</div>
+										<div class="col-md-8">
+											<div th:if="${#fields.hasErrors('closeTime')}" class="text-danger small mb-2" th:errors="*{closeTime}"></div>
+											<select id="closeTime" th:field="*{closeTime}" class="form-control">
+												<option value="">選択してください</option>
+												<option value="00:00">00:00</optio>
+												<option value="00:30">00:30</option>
+												<option value="01:00">01:00</option>
+												<option value="01:30">01:30</option>
+												<option value="02:00">02:00</option>
+												<option value="02:30">02:30</option>
+												<option value="03:00">03:00</option>
+												<option value="03:30">03:30</option>
+												<option value="04:00">04:00</option>
+												<option value="04:30">04:30</option>
+												<option value="05:00">05:00</option>
+												<option value="05:30">05:30</option>
+												<option value="06:00">06:00</option>
+												<option value="06:30">06:30</option>
+												<option value="07:00">07:00</option>
+												<option value="07:30">07:30</option>
+												<option value="08:00">08:00</option>
+												<option value="08:30">08:30</option>
+												<option value="09:00">09:00</option>
+												<option value="09:30">09:30</option>
+												<option value="10:00">10:00</option>
+												<option value="10:30">10:30</option>
+												<option value="11:00">11:00</option>
+												<option value="11:30">11:30</option>
+												<option value="12:00">12:00</option>
+												<option value="12:30">12:30</option>
+												<option value="13:00">13:00</option>
+												<option value="13:30">13:30</option>
+												<option value="14:00">14:00</option>
+												<option value="14:30">14:30</option>
+												<option value="15:00">15:00</option>
+												<option value="15:30">15:30</option>
+												<option value="16:00">16:00</option>
+												<option value="16:30">16:30</option>
+												<option value="17:00">17:00</option>
+												<option value="17:30">17:30</option>
+												<option value="18:00">18:00</option>
+												<option value="18:30">18:30</option>
+												<option value="19:00">19:00</option>
+												<option value="19:30">19:30</option>
+												<option value="20:00">20:00</option>
+												<option value="20:30">20:30</option>
+												<option value="21:00">21:00</option>
+												<option value="21:30">21:30</option>
+												<option value="22:00">22:00</option>
+												<option value="22:30">22:30</option>
+												<option value="23:00">23:00</option>
+												<option value="23:30">23:30</option>
+											</select>
+										</div>
+									</div>
+									<div class="form-group row mb-3">
+										<div class="col-md-4">
+											<label for="seatingCapacity" class="col-form-label text-md-left fw-bold">定休日</label>
+										</div>
+										<div class="col-md-8">
+											<div class="form-check d-flex align-items-center me-3" th:each="regularHoliday, stat : ${regularHolidays}">
+									 			<input type="checkbox" class="form-check-input"
+													th:id="${'regularHoliday' + stat.index}"
+													name="regularHolidayIds[]"
+									                th:value="${regularHoliday.id}"
+									                th:checked="${restaurantEditForm.regularHolidayIds != null ? #lists.contains(restaurantEditForm.regularHolidayIds, regularHoliday.id) : false}"/>
+												<label class="form-check-label" th:for="${'regularHoliday' + stat.index}">
+													<span class="badge bg-secondary ms-1" th:text="${regularHoliday.day}"></span>
+												</label>
+											</div>
+										</div>
+									</div>
+
+									<div class="form-group row mb-3">
+										<div class="col-md-4">
+											<label for="seatingCapacity" class="col-form-label text-md-left fw-bold">座席数（単位：席）</label>
+										</div>
+										<div class="col-md-8">
+											<div th:if="${#fields.hasErrors('seatingCapacity')}" class="text-danger small mb-2" th:errors="*{seatingCapacity}"></div>
+											<input type="number" class="form-control" th:field="*{seatingCapacity}">
+										</div>
+									</div>
+									
+									<th:block th:each="i : ${#numbers.sequence(0, 2)}">
+										<div class="form-group row mb-3">
+											<div class="col-md-4">
+												<label th:for="${'category' + (i + 1)}" class="col-form-label text-md-left fw-bold" th:text="${'カテゴリ' + (i + 1) + '（3つまで選択可）'}"></label>
+											</div>
+											<div class="col-md-8">
+												<select class="form-control form-select" th:id="${'category' + (i + 1)}" name="categoryIds[]">
+													<option value="">選択なし</option>
+														<div th:each="category : ${categories}">
+														<option th:value="${category.id}"
+														th:selected="${restaurantEditForm.categoryIds != null && i < restaurantEditForm.categoryIds.size() ? restaurantEditForm.categoryIds[i] == category.id : false}"
+														th:text="${category.name}"></option>
+													</div>
+												</select>
+											</div>
+										</div>
+									</th:block>	
+										
+									<div class="form-group d-flex justify-content-center my-4">
+										<button type="submit" class="btn text-white shadow-sm w-50 nagoyameshi-btn">更新</button>
+									</div>
+							</form>                                                                         
+						</div>
+					</div>
+				</div>                 
+			</main>
+			
+			<!-- フッター -->
+			<div th:replace="~{fragment :: footer}"></div>
+		</div>    
+		
+		<div th:replace="~{fragment :: scripts}"></div>  
+		<script th:src="@{/js/preview.js}"></script>     
+	</body>
+</html>
